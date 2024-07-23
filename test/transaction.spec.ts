@@ -1,4 +1,5 @@
-import { it, beforeAll, afterAll, describe } from 'vitest'
+/* eslint-disable prettier/prettier */
+import { it, beforeAll, afterAll, describe, expect } from 'vitest'
 import request from 'supertest'
 import { app } from '../src/app'
 
@@ -30,11 +31,18 @@ describe('Transactions Routes', () => {
         amount: 5000,
         type: 'credit',
       })
-    const cookies = createTransactionResponse.get('Set-Cookie')
+    const cookies = createTransactionResponse.get('Set-Cookie') ?? []
 
-  //   const listTransactionsResponse = await request(app.server)
-  //     .get('/transactions')
-  //     .set('Cookie', cookies)
-  //     .expect(200)
-  // })
+    const listTransactionsResponse = await request(app.server)
+      .get('/transactions')
+      .set('Cookie', cookies)
+      .expect(200)
+
+    expect(listTransactionsResponse.body.transactions).toEqual([
+      expect.objectContaining({
+        title: 'new transaction',
+        amount: 5000,
+      }),
+    ])
+  })
 })
