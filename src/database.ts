@@ -3,11 +3,14 @@ import { env } from './env'
 
 // separando as config do knex
 export const config: Knex.Config = {
-  client: 'sqlite',
-  connection: {
-    // caminho da pasta onde sera salvo o banco de dadosaa
-    filename: env.DATABASE_URL,
-  },
+  client: env.DATABASE_CLIENT,
+  connection:
+    env.DATABASE_CLIENT === 'sqlite'
+      ? {
+          // caminho da pasta onde sera salvo o banco de dadosaa
+          filename: env.DATABASE_URL,
+        }
+      : env.DATABASE_URL,
   // fazendo o knex entender valores null
   useNullAsDefault: true,
   // configurando na onde serao salvas as migrations
